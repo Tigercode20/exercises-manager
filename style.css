@@ -647,7 +647,7 @@ button:hover {
     :root {
         --bg-color: #f0f2f5;
         --text-color: #090303;
-        --input-bg-color: #210303;
+        --input-bg-color: #d38d62;
         --modal-bg: rgba(0, 0, 0, 0.5);
     }
     
