@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>بناء برنامج التمرين</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏋️ بناء برنامج التمرين</h1>
+        </div>
+
+        
+        <!-- Day Selection -->
+        <div class="day-title" id="dayTitle">Day 1</div>
+
+        <!-- Exercise Form -->
+        <div class="exercise-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اليوم</label>
+                    <select id="daySelect">
+                        <option value="1">Day 1</option>
+                        <option value="2">Day 2</option>
+                        <option value="3">Day 3</option>
+                        <option value="4">Day 4</option>
+                        <option value="5">Day 5</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ترتيب التمرين</label>
+                    <select id="exerciseOrder">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>نوع التمرين</label>
+                    <select id="exerciseType">
+                        <option value="كارديو">🏃 كارديو</option>
+                        <option value="تمارين إحماء و إطالات">🔥 تمارين إحماء و إطالات</option>
+                        <option value="بايسيبس (Biceps)">💪 بايسيبس</option>
+                        <option value="ترايسيبس (Triceps)">🦾 ترايسيبس</option>
+                        <option value="ساعد (Forearms)">✋ ساعد</option>
+                        <option value="كتف (Shoulder)">🎯 كتف</option>
+                        <option value="ظهر (Back)">🎪 ظهر</option>
+                        <option value="صدر (Chest)">🏋️ صدر</option>
+                        <option value="بطن">🔶 بطن</option>
+                        <option value="رجل (Leg)">🦵 رجل</option>
+                        <option value="هامسترينج (Hamstrings)">🦵 هامسترينج</option>
+                        <option value="أرداف (Glutes)">🍑 أرداف</option>
+                        <option value="مقابض (Hips)">🦴 مقابض</option>
+                        <option value="ربلة (Calves)">👣 ربلة</option>
+                    </select>
+                </div>
+
+                <div class="form-group-large">
+                    <label>اسم التمرين</label>
+                    <select id="exerciseName">
+                        <!-- سيتم تعبئته ديناميكياً -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>المجموعات (Sets)</label>
+                    <select id="sets">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>التكرارات (Reps)</label>
+                    <select id="reps">
+                        <option value="8-12">8-12</option>
+                        <option value="10-12">10-12</option>
+                        <option value="12-15">12-15</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>الراحة (Rest)</label>
+                    <select id="rest">
+                        <option value="1.5-2 min">1.5-2 min</option>
+                        <option value="2-3 min">2-3 min</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <button onclick="addExercise()" id="addBtn">تم ✅</button>
+                    <button onclick="updateExercise()" id="updateBtn" style="display:none;">تحديث ✏️</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exercises Table -->
+        <table class="exercise-table" id="exercisesTable">
+            <thead>
+                <tr>
+                    <th>ترتيب</th>
+                    <th>نوع التمرين</th>
+                    <th>اسم التمرين</th>
+                    <th>المجموعات</th>
+                    <th>التكرارات</th>
+                    <th>الراحة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="exercisesBody">
+                <!-- سيتم إضافة التمارين هنا -->
+            </tbody>
+        </table>
+
+        <!-- Download Section -->
+        <div class="download-section">
+            <button class="preview-btn" onclick="showPreview()">👀 معاينة البرنامج</button>
+            <button class="download-btn" onclick="downloadImage()">🖼️ تحميل صورة</button>
+            <button class="pdf-btn" onclick="downloadPDF()">📄 تحميل PDF</button>
+        </div>
+
+        <!-- Color Picker Section -->
+        <section class="color-section">
+            <h2>🎨 تخصيص الألوان</h2>
+            <div class="color-picker">
+                <div class="color-group">
+                    <label>لون الخلفية:</label>
+                    <input type="color" id="colorBg" value="#0a0f25">
+                </div>
+                <div class="color-group">
+                    <label>لون التمييز:</label>
+                    <input type="color" id="colorAccent" value="#ff6b35">
+                </div>
+                <div class="color-group">
+                    <label>لون النص:</label>
+                    <input type="color" id="colorText" value="#ffffff">
+                </div>
+                <div class="color-group">
+                    <button onclick="applyColors()">تطبيق الألوان</button>
+                    <button onclick="resetColors()" class="secondary-btn">إعادة تعيين</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>معاينة برنامج التمرين</h2>
+                <span class="close" onclick="closePreview()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="page" id="previewPage">
+                    <div class="page-header">
+                        <h1 class="page-title">برنامج التمرين</h1>
+                        <div class="page-day" id="previewDayTitle">Day 1</div>
+                    </div>
+                    
+                    <table class="print-table">
+                        <thead>
+                            <tr>
+                                <th width="10%">#</th>
+                                <th width="50%">اسم التمرين</th>
+                                <th width="15%">المجموعات</th>
+                                <th width="15%">التكرارات</th>
+                                <th width="10%">الراحة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="previewExercisesBody">
+                            <!-- سيتم تعبئته ديناميكياً -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" onclick="closePreview()">رجوع للتعديل</button>
+                <button class="primary-btn" onclick="confirmDownload()">موافق والتحميل</button>
+            </div>
+        </div>
+    </div>
+
+<!-- Print Page (Hidden) -->
+<!-- Print Page (Hidden) -->
+<div id="printPage" style="display: none;"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="exercises-data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

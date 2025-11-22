@@ -1,0 +1,734 @@
+:root {
+    --bg-color: #0a0f25;
+    --accent-color: #ff6b35;
+    --text-color: #ffffff;
+    --input-bg-color: #1a1f3a;
+    --modal-bg: rgba(0, 0, 0, 0.8);
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.container {
+    max-width: 1400px;
+    margin: auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    color: var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-color);
+}
+
+/* قسم الألوان */
+.color-section {
+    background: rgba(20, 25, 50, 0.9);
+    border: 2px solid var(--accent-color);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
+}
+
+.color-section h2 {
+    color: var(--accent-color);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.color-picker {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: end;
+}
+
+.color-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.color-group label {
+    color: var(--accent-color);
+    font-size: 14px;
+}
+
+.color-group input[type="color"] {
+    width: 60px;
+    height: 40px;
+    border: 2px solid var(--accent-color);
+    border-radius: 8px;
+    cursor: pointer;
+    background: var(--input-bg-color);
+}
+
+.day-title {
+    font-size: 24px;
+    color: var(--accent-color);
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    background: rgba(255, 107, 53, 0.1);
+    border-radius: 10px;
+}
+
+.exercise-form {
+    background: rgba(20, 25, 50, 0.9);
+    border: 2px solid var(--accent-color);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    align-items: end;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 120px;
+}
+
+.form-group-large {
+    flex: 2;
+    min-width: 200px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: var(--accent-color);
+}
+
+select, button, input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--accent-color);
+    background: var(--input-bg-color);
+    color: var(--text-color);
+    font-family: 'Cairo', sans-serif;
+    transition: all 0.3s ease;
+}
+
+button {
+    background: linear-gradient(45deg, var(--accent-color), #ff8e35);
+    color: #000;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    box-shadow: 0 0 15px var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.exercise-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: rgba(30, 35, 70, 0.8);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.exercise-table th {
+    background: var(--accent-color);
+    color: #000;
+    padding: 15px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.exercise-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.exercise-table tr:hover {
+    background: rgba(255, 107, 53, 0.1);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.edit-btn, .delete-btn {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 5px;
+}
+
+.edit-btn {
+    background: #4ecdc4;
+}
+
+.delete-btn {
+    background: #ff6b6b;
+}
+
+.download-section {
+    text-align: center;
+    margin: 30px 0;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.preview-btn, .download-btn, .pdf-btn {
+    padding: 15px 30px;
+    font-size: 18px;
+    min-width: 200px;
+}
+
+.preview-btn {
+    background: linear-gradient(45deg, #0984e3, #74b9ff);
+}
+
+.download-btn {
+    background: linear-gradient(45deg, #00b894, #00cec9);
+}
+
+.pdf-btn {
+    background: linear-gradient(45deg, #e17055, #fab1a0);
+}
+
+/* صفحة التحميل */
+.page {
+    width: 210mm;
+    min-height: 297mm;
+    max-height: 297mm;
+    background: linear-gradient(135deg, var(--bg-color) 0%, #0a1233 100%);
+    border: 2px solid var(--accent-color);
+    padding: 20mm;
+    margin: 20px auto;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+    page-break-after: always;
+    page-break-inside: avoid;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 3px solid var(--accent-color);
+}
+
+.page-title {
+    font-size: 32px;
+    color: var(--accent-color);
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px var(--accent-color);
+}
+
+.page-day {
+    font-size: 24px;
+    color: var(--text-color);
+    background: rgba(255, 107, 53, 0.2);
+    padding: 10px 20px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.print-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+    page-break-inside: avoid;
+}
+
+.print-table th {
+    background: var(--accent-color);
+    color: #000;
+    padding: 18px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    border: 2px solid #000;
+}
+
+.print-table td {
+    padding: 16px 18px;
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(30, 35, 70, 0.6);
+    page-break-inside: avoid;
+}
+
+.print-table tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.exercise-number {
+    font-weight: bold;
+    color: var(--accent-color);
+    font-size: 18px;
+}
+
+.exercise-name {
+    text-align: right;
+    font-weight: bold;
+}
+
+/* نافذة المعاينة */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--modal-bg);
+    overflow: auto;
+}
+
+.modal-content {
+    background: var(--bg-color);
+    margin: 2% auto;
+    padding: 20px;
+    border: 2px solid var(--accent-color);
+    border-radius: 15px;
+    width: 90%;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--accent-color);
+}
+
+.modal-header h2 {
+    color: var(--accent-color);
+    margin: 0;
+}
+
+.close {
+    color: var(--accent-color);
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #ff8e35;
+}
+
+.modal-body {
+    text-align: center;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.primary-btn {
+    background: linear-gradient(45deg, #00b894, #00cec9);
+    padding: 12px 25px;
+    font-size: 16px;
+}
+
+.secondary-btn {
+    background: linear-gradient(45deg, #636e72, #b2bec3);
+    padding: 12px 25px;
+    font-size: 16px;
+}
+
+/* تحسينات الطباعة */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .page, .page * {
+        visibility: visible;
+    }
+    .page {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 210mm;
+        height: 297mm;
+        margin: 0;
+        padding: 20mm;
+        box-shadow: none;
+        page-break-after: always;
+    }
+    .print-table {
+        page-break-inside: avoid;
+    }
+    .print-table tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+}
+
+/* تحسينات للشاشات الصغيرة */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .form-group, .form-group-large {
+        min-width: 100%;
+    }
+    
+    .download-section {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .preview-btn, .download-btn, .pdf-btn {
+        min-width: 90%;
+    }
+    
+    .color-picker {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+/* إضافة هذه القواعد في نهاية الملف */
+
+/* تحسينات الطباعة - حل مشكلة الصفحات الفارغة */
+/* إضافة هذه القواعد في نهاية الملف */
+
+/* تحسينات الطباعة - الحفاظ على الشكل الجميل */
+@media print {
+    body * {
+        visibility: hidden;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    #printPage, #printPage * {
+        visibility: visible;
+    }
+    
+    #printPage {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        min-height: 297mm !important;
+        max-height: 297mm !important;
+        margin: 0 !important;
+        padding: 20mm !important;
+        box-shadow: none !important;
+        border: none !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+        overflow: hidden !important;
+        background: linear-gradient(135deg, var(--bg-color) 0%, #0a1233 100%) !important;
+    }
+    
+    /* إخفاء أي عناصر إضافية */
+    .page:not(#printPage) {
+        display: none !important;
+    }
+}
+
+/* الحفاظ على الشكل الجميل للصفحة المطبوعة */
+#printPage {
+    width: 210mm;
+    height: 297mm;
+    min-height: 297mm;
+    max-height: 297mm;
+    background: linear-gradient(135deg, var(--bg-color) 0%, #0a1233 100%);
+    border: 2px solid var(--accent-color);
+    padding: 20mm;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+    display: none;
+}
+
+/* الحفاظ على شكل الهيدر الجميل */
+.print-page-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 3px solid var(--accent-color);
+}
+
+.print-page-title {
+    font-size: 32px;
+    color: var(--accent-color);
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px var(--accent-color);
+}
+
+.print-page-day {
+    font-size: 24px;
+    color: var(--text-color);
+    background: rgba(255, 107, 53, 0.2);
+    padding: 10px 20px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+/* الحفاظ على شكل الجدول الجميل */
+.print-table-pdf {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.print-table-pdf th {
+    background: var(--accent-color);
+    color: #000;
+    padding: 18px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    border: 2px solid #000;
+}
+
+.print-table-pdf td {
+    padding: 16px 18px;
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(30, 35, 70, 0.6);
+}
+
+.print-table-pdf tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.print-exercise-number {
+    font-weight: bold;
+    color: var(--accent-color);
+    font-size: 18px;
+}
+
+.print-exercise-name {
+    text-align: right;
+    font-weight: bold;
+}
+
+/* مساحة ذكية في الأسفل لمنع الصفحات الفارغة */
+.print-page-footer {
+    height: 1px;
+    margin-top: 20px;
+}
+/* إضافة هذه القواعد في نهاية الملف */
+
+/* تحسينات للأزرار في الجدول */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.edit-btn, .delete-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.edit-btn {
+    background: #4ecdc4;
+    color: #000;
+}
+
+.edit-btn:hover {
+    background: #3db8af;
+    transform: translateY(-2px);
+}
+
+.delete-btn {
+    background: #ff6b6b;
+    color: #000;
+}
+
+.delete-btn:hover {
+    background: #ff5252;
+    transform: translateY(-2px);
+}
+
+/* تحسينات للجدول الرئيسي */
+.exercise-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: rgba(30, 35, 70, 0.8);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.2);
+}
+
+.exercise-table th {
+    background: var(--accent-color);
+    color: #000;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.exercise-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+/* تحسينات للاستجابة */
+@media (max-width: 768px) {
+    .action-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .edit-btn, .delete-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+    
+    .exercise-table th,
+    .exercise-table td {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+}
+
+/* تحسينات للوضع الليلي */
+@media (prefers-color-scheme: light) {
+    :root {
+        --bg-color: #f0f2f5;
+        --text-color: #090303;
+        --input-bg-color: #210303;
+        --modal-bg: rgba(0, 0, 0, 0.5);
+    }
+    
+    .exercise-form,
+    .color-section,
+    .exercise-table {
+        background: rgba(0, 0, 0, 0.1);
+    }
+    
+    .exercise-table td {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* تحسينات للوصول */
+button:focus,
+select:focus,
+input:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* تحميل سهل */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* تحسينات للروابط في PDF */
+.print-exercise-name a {
+    color: var(--accent-color) !important;
+    text-decoration: none !important;
+    font-weight: bold;
+}
+
+.print-exercise-name a:hover {
+    text-decoration: underline !important;
+}
+
+/* تحسينات للطباعة مع الروابط */
+@media print {
+    .print-exercise-name a {
+        color: #0000EE !important;
+        text-decoration: underline !important;
+    }
+}
+
+/* تحسينات للروابط في PDF */
+.print-exercise-name a.exercise-link {
+    color: var(--accent-color) !important;
+    text-decoration: none !important;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+.print-exercise-name a.exercise-link:hover {
+    text-decoration: underline !important;
+    background: rgba(255, 107, 53, 0.1);
+    transform: translateY(-1px);
+}
+
+/* تحسينات للطباعة مع الروابط */
+@media print {
+    .print-exercise-name a.exercise-link {
+        color: #0000EE !important;
+        text-decoration: underline !important;
+    }
+}
+
+/* تحسينات للروابط في المعاينة */
+.exercise-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.exercise-link:hover {
+    text-decoration: underline;
+}
