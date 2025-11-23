@@ -602,7 +602,7 @@ async function mergePDFs() {
         const url = URL.createObjectURL(blob);
 
         document.getElementById('downloadLink').href = url;
-        document.getElementById('downloadLink').download = 'merged.pdf';
+        document.getElementById('downloadLink').download = 'HOME TRAINING PLAN.pdf';
         document.getElementById('downloadBtn').style.display = 'inline-block';
 
         msg.textContent = 'تم الدمج! اضغط على الزر للتحميل.';
