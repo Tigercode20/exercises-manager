@@ -60,7 +60,7 @@ const exercisesData = {
         {name: "TRICEPS PUSH DOWN", link: "https://www.youtube.com/watch?v=6Fzep104f0s"}
     ],
     "ساعد (Forearms)": [
-        {name: "CABLE ROPE CRUNCH", link: "https://www.youtube.com/watch?v=2wPpcJBe03o"},
+        {name: "Dumbbell Bench Wrist Curl", link: "https://www.youtube.com/watch?v=2wPpcJBe03o"},
         {name: "DB WRIST EXTENSION", link: "https://www.youtube.com/watch?v=UcwgCTkVvIQ"},
         {name: "CABLE WRIST CURL", link: "https://www.youtube.com/watch?v=WVAaKJvToe0"},
         {name: "CABLE WRIST EXTENSION", link: "https://www.youtube.com/watch?v=AzywEXzVkfU"}

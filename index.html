@@ -123,12 +123,13 @@
             </tbody>
         </table>
 
-        <!-- Download Section -->
-        <div class="download-section">
-            <button class="preview-btn" onclick="showPreview()">👀 معاينة البرنامج</button>
-            <button class="download-btn" onclick="downloadImage()">🖼️ تحميل صورة</button>
-            <button class="pdf-btn" onclick="downloadPDF()">📄 تحميل PDF</button>
-        </div>
+                    <!-- Download Section -->
+            <div class="download-section">
+                <button class="preview-btn" onclick="showPreview()">معاينة البرنامج</button>
+                <button class="download-btn" onclick="downloadImage()">تحميل صورة</button>
+                <button class="pdf-btn" onclick="downloadCurrentDayPDF()">تحميل PDF (اليوم الحالي)</button>
+                <button class="pdf-all-btn" onclick="downloadAllDaysPDF()">تحميل جميع الأيام PDF</button>
+            </div>
 
         <!-- Color Picker Section -->
         <section class="color-section">
@@ -196,8 +197,8 @@
 <!-- Print Page (Hidden) -->
 <div id="printPage" style="display: none;"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="exercises-data.js"></script>
 <script src="script.js"></script>
 </body>
