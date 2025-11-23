@@ -317,7 +317,7 @@ function downloadAllDaysPDF() {
         pdf.text('Rest', 185, y + 8, { align: 'center' });
 
         y += 18;
-        pdf.setFontSize(13);
+        pdf.setFontSize(10);
         pdf.setFont('helvetica', 'normal');
         pdf.setTextColor(text.r, text.g, text.b);
 
@@ -413,7 +413,7 @@ function generatePDFForDay(day) {
     pdf.text('Rest', 185, y + 8, { align: 'center' });
 
     y += 18;
-    pdf.setFontSize(13);
+    pdf.setFontSize(10);
     pdf.setFont('helvetica', 'normal');
     pdf.setTextColor(text.r, text.g, text.b);
 
@@ -455,28 +455,48 @@ function downloadImage() {
     const dayExercises = exercises.filter(ex => ex.day === currentDay).sort((a, b) => a.order - b.order);
 
     if (dayExercises.length === 0) {
-        alert('No exercises to download image!');
+        alert('لا توجد تمارين لتحميل الصورة!');
         return;
     }
 
-    // إعداد الصفحة للصورة
     const printPage = document.getElementById('printPage');
     printPage.innerHTML = createPrintPage(currentDay, dayExercises);
+
+    // أبعاد A4 بالبكسل عند 300 DPI (أفضل جودة للطباعة)
+    const width = 2480;  // 210 مم × 11.8 بكسل/مم تقريبًا
+    const height = 3508; // 297 مم × 11.8 بكسل/مم
+
+    printPage.style.width = width + 'px';
+    printPage.style.height = height + 'px';
+    printPage.style.padding = '80px';
+    printPage.style.boxSizing = 'border-box';
+    printPage.style.background = 'white';
+    printPage.style.fontFamily = "'Cairo', sans-serif";
+    printPage.style.color = '#000';
     printPage.style.display = 'block';
 
     html2canvas(printPage, {
-        scale: 3,
-        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-color'),
+        scale: 1,                    // مهم: نخليها 1 عشان ما يضربش في الـ width/height
+        width: width,
+        height: height,
         useCORS: true,
+        backgroundColor: '#ffffff',
         logging: false
     }).then(canvas => {
         const link = document.createElement('a');
-        link.download = `Workout_Program_Day_${currentDay}.png`;
+        link.download = `Workout_Program_Day_${currentDay}_A4.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
+
+        // إرجاع الـ div لحاله الأصلي
         printPage.style.display = 'none';
-    }).catch(() => {
-        alert('Error generating image!');
+        printPage.style.width = '';
+        printPage.style.height = '';
+        printPage.style.padding = '';
+        printPage.style.background = '';
+    }).catch(err => {
+        console.error(err);
+        alert('حدث خطأ أثناء إنشاء الصورة!');
         printPage.style.display = 'none';
     });
 }
@@ -515,6 +535,84 @@ function createPrintPage(currentDay, dayExercises) {
             Created by Workout Program Builder Tool
         </div>
     `;
+}
+
+// -------------------- حماية بسيطة --------------------
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i'))) {
+        e.preventDefault();
+    }
+});
+
+// -------------------- دمج PDF --------------------
+async function mergePDFs() {
+    const mainFile = document.getElementById('mainPDF').files[0];
+    const insertFile = document.getElementById('insertPDF').files[0];
+    const pageNum = parseInt(document.getElementById('pageNumber').value) - 1; // 0-based
+    const insertMode = document.getElementById('insertMode').value;
+    const msg = document.getElementById('msg');
+
+    if (!mainFile || !insertFile) {
+        msg.textContent = 'يرجى اختيار كلا الملفين!';
+        return;
+    }
+
+    msg.textContent = 'يتم الدمج...';
+
+    try {
+        const PDFLib = window.PDFLib; // من المكتبة المضافة
+        const mainBytes = await mainFile.arrayBuffer();
+        const mainDoc = await PDFLib.PDFDocument.load(mainBytes);
+
+        let insertDoc;
+        if (insertFile.type.startsWith('image/')) {
+            // تحويل الصورة إلى PDF
+            insertDoc = await PDFLib.PDFDocument.create();
+            const page = insertDoc.addPage([mainDoc.getPage(0).getWidth(), mainDoc.getPage(0).getHeight()]);
+            const imgBytes = await insertFile.arrayBuffer();
+            let img;
+            if (insertFile.type === 'image/jpeg') {
+                img = await insertDoc.embedJpg(imgBytes);
+            } else {
+                img = await insertDoc.embedPng(imgBytes);
+            }
+            page.drawImage(img, { x: 0, y: 0, width: page.getWidth(), height: page.getHeight() });
+        } else {
+            const insertBytes = await insertFile.arrayBuffer();
+            insertDoc = await PDFLib.PDFDocument.load(insertBytes);
+        }
+
+        const pagesToInsert = await mainDoc.copyPages(insertDoc, insertDoc.getPageIndices());
+
+        if (insertMode === 'after') {
+            let idx = pageNum + 1;
+            for (let i = 0; i < pagesToInsert.length; i++) {
+                mainDoc.insertPage(idx + i, pagesToInsert[i]);
+            }
+        } else if (insertMode === 'replace') {
+            mainDoc.removePage(pageNum);
+            for (let i = 0; i < pagesToInsert.length; i++) {
+                mainDoc.insertPage(pageNum + i, pagesToInsert[i]);
+            }
+        }
+
+        const mergedBytes = await mainDoc.save();
+        const blob = new Blob([mergedBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+
+        document.getElementById('downloadLink').href = url;
+        document.getElementById('downloadLink').download = 'merged.pdf';
+        document.getElementById('downloadBtn').style.display = 'inline-block';
+
+        msg.textContent = 'تم الدمج! اضغط على الزر للتحميل.';
+    } catch (error) {
+        msg.textContent = 'حدث خطأ أثناء الدمج: ' + error.message;
+    }
+}
+
+function triggerDownload() {
+    document.getElementById('downloadLink').click();
 }
 
 // التهيئة الأولية

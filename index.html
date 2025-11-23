@@ -152,6 +152,37 @@
                     <button onclick="resetColors()" class="secondary-btn">إعادة تعيين</button>
                 </div>
             </div>
+            
+                        <!-- Merge PDF Section -->
+            <section class="merge-section">
+                <h2>📂 دمج الملفات</h2>
+                <div class="merge-form">
+                    <div class="form-group">
+                        <label>الملف الرئيسي (PDF):</label>
+                        <input type="file" id="mainPDF" accept=".pdf">
+                    </div>
+                    <div class="form-group">
+                        <label>الملف المراد إدراجه (PDF أو صورة):</label>
+                        <input type="file" id="insertPDF" accept=".pdf,image/*">
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الصفحة :</label>
+                        <input type="number" id="pageNumber" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>الوضع:</label>
+                        <select id="insertMode">
+                            <option value="after">إدراج بعد الصفحة</option>
+                            <option value="replace">استبدال الصفحة</option>
+                        </select>
+                    </div>
+                    <button onclick="mergePDFs()">دمج الآن</button>
+                </div>
+                <p id="msg"></p>
+                <a id="downloadLink" style="display:none;"></a>
+                <button id="downloadBtn" onclick="triggerDownload()" style="display:none;">تحميل الملف المدمج</button>
+            </section>
+            
         </section>
 
     </div>
@@ -200,6 +231,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="exercises-data.js"></script>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

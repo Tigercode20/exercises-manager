@@ -471,3 +471,37 @@ input:focus {
 .view-btn:hover {
     background: #1976d2;
 }
+
+.merge-section {
+    background: rgba(20, 25, 50, 0.9);
+    border: 2px solid var(--accent-color);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
+}
+
+.merge-section h2 {
+    color: var(--accent-color);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.merge-form {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: end;
+}
+
+#msg {
+    color: var(--text-color);
+    margin-top: 10px;
+    text-align: center;
+}
+
+#downloadBtn {
+    background: #4caf50;
+    color: white;
+    margin-top: 10px;
+}
