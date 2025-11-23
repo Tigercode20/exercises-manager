@@ -373,10 +373,10 @@ button:hover {
 
 @media (prefers-color-scheme: light) {
     :root {
-        --bg-color: #f0f2f5;
-        --text-color: #090303;
-        --input-bg-color: #007efc;
-        --modal-bg: rgba(0, 0, 0, 0.5);
+        --bg-color: #0a0f25;
+        --text-color: #ffffff;
+        --input-bg-color: #1a1f3a;
+        --modal-bg: rgba(0, 0, 0, 0.8);
     }
     
     .exercise-form,
