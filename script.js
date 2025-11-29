@@ -1,85 +1,114 @@
+const DAYS = 5;
+let currentDay = 1;
+let dayNames = {1:"Day 1",2:"Day 2",3:"Day 3",4:"Day 4",5:"Day 5"};
 let exercises = [];
 let editingIndex = -1;
 
-// تحديث قائمة التمارين عند تغيير نوع التمرين
-document.getElementById('exerciseType').addEventListener('change', function() {
-    updateExerciseNames();
-});
+const daysRow = document.getElementById("daysRow");
+const currentDayLabel = document.getElementById("currentDayLabel");
 
-function updateExerciseNames() {
-    const exerciseType = document.getElementById('exerciseType').value;
-    const exerciseNameSelect = document.getElementById('exerciseName');
-    
-    exerciseNameSelect.innerHTML = '';
-    
-    if (exercisesData[exerciseType]) {
-        exercisesData[exerciseType].forEach(exercise => {
-            const option = document.createElement('option');
-            option.value = exercise.name;
-            option.textContent = exercise.name;
-            option.dataset.link = exercise.link;
-            exerciseNameSelect.appendChild(option);
+// إنشاء كروت الأيام
+function renderDays() {
+    daysRow.innerHTML = "";
+    for (let i = 1; i <= DAYS; i++) {
+        const card = document.createElement("div");
+        card.className = `day-card ${currentDay === i ? "active" : ""}`;
+
+        const pill = document.createElement("div");
+        pill.className = "day-pill";
+        const input = document.createElement("input");
+        input.value = dayNames[i];
+        input.addEventListener("input", () => {
+            dayNames[i] = input.value || `Day ${i}`;
+            document.querySelectorAll(".day-card")[i-1].querySelector(".big").textContent = dayNames[i];
+            if (currentDay === i) currentDayLabel.textContent = dayNames[i];
         });
+        pill.appendChild(input);
+
+        const main = document.createElement("div");
+        main.className = "day-main";
+        main.innerHTML = `<div class="big">${dayNames[i]}</div><div class="small">Day ${i}</div>`;
+
+        card.appendChild(pill);
+        card.appendChild(main);
+        card.onclick = (e) => { if (e.target !== input) setCurrentDay(i); };
+        daysRow.appendChild(card);
     }
 }
 
-// تحديث عنوان اليوم
-document.getElementById('daySelect').addEventListener('change', function() {
-    document.getElementById('dayTitle').textContent = 'Day ' + this.value;
+function setCurrentDay(day) {
+    currentDay = day;
+    currentDayLabel.textContent = dayNames[day];
+    renderDays();
     renderExercises();
-});
+}
+
+renderDays();
+
+// تحديث قائمة التمارين
+document.getElementById('exerciseType').addEventListener('change', updateExerciseNames);
+function updateExerciseNames() {
+    const type = document.getElementById('exerciseType').value;
+    const select = document.getElementById('exerciseName');
+    select.innerHTML = '';
+    exercisesData[type]?.forEach(ex => {
+        const opt = document.createElement('option');
+        opt.value = ex.name;
+        opt.textContent = ex.name;
+        opt.dataset.link = ex.link || '';
+        select.appendChild(opt);
+    });
+}
 
 function addExercise() {
-    const order = document.getElementById('exerciseOrder').value;
-    const day = document.getElementById('daySelect').value;
+    const order = parseInt(document.getElementById('exerciseOrder').value);
     const type = document.getElementById('exerciseType').value;
     const nameSelect = document.getElementById('exerciseName');
     const name = nameSelect.value;
-    const link = nameSelect.options[nameSelect.selectedIndex].dataset.link;
+    const link = nameSelect.selectedOptions[0].dataset.link;
     const sets = document.getElementById('sets').value;
     const reps = document.getElementById('reps').value;
     const rest = document.getElementById('rest').value;
 
-    // التحقق من عدم تكرار ترتيب التمرين في نفس اليوم
-    const dayExercises = exercises.filter(ex => ex.day === parseInt(day));
-    const existingOrder = dayExercises.find(ex => ex.order === parseInt(order));
-    
-    if (existingOrder) {
-        alert('هذا الترتيب مستخدم بالفعل في هذا اليوم! الرجاء اختيار ترتيب آخر.');
+    if (exercises.some(e => e.day === currentDay && e.order === order)) {
+        alert("الترتيب ده مستخدم بالفعل في اليوم ده!");
         return;
     }
 
-    const exercise = {
-        order: parseInt(order),
-        day: parseInt(day),
-        type: type,
-        name: name,
-        link: link,
-        sets: sets,
-        reps: reps,
-        rest: rest
-    };
-
-    exercises.push(exercise);
+    exercises.push({ order, day: currentDay, type, name, link, sets, reps, rest });
     renderExercises();
     resetForm();
 }
 
-function editExercise(index) {
-    const exercise = exercises[index];
-    
-    document.getElementById('exerciseOrder').value = exercise.order;
-    document.getElementById('daySelect').value = exercise.day;
-    document.getElementById('exerciseType').value = exercise.type;
-    updateExerciseNames();
-    setTimeout(() => {
-        document.getElementById('exerciseName').value = exercise.name;
-    }, 100);
-    document.getElementById('sets').value = exercise.sets;
-    document.getElementById('reps').value = exercise.reps;
-    document.getElementById('rest').value = exercise.rest;
+function renderExercises() {
+    const tbody = document.getElementById('exercisesBody');
+    const dayEx = exercises.filter(e => e.day === currentDay).sort((a, b) => a.order - b.order);
+    tbody.innerHTML = dayEx.length === 0 ? `<tr><td colspan="7" style="color:var(--accent-color);padding:30px;">لا توجد تمارين</td></tr>` : '';
+    dayEx.forEach(ex => {
+        const i = exercises.indexOf(ex);
+        tbody.innerHTML += `
+            <tr>
+                <td>${ex.order}</td><td>${ex.type}</td><td>${ex.name}</td>
+                <td>${ex.sets}</td><td>${ex.reps}</td><td>${ex.rest}</td>
+                <td class="action-buttons">
+                    <button class="edit-btn" onclick="editExercise(${i})">تعديل</button>
+                    <button class="delete-btn" onclick="deleteExercise(${i})">حذف</button>
+                    ${ex.link ? `<button class="view-btn" onclick="window.open('${ex.link}', '_blank')">عرض</button>` : ''}
+                </td>
+            </tr>`;
+    });
+}
 
-    editingIndex = index;
+function editExercise(i) {
+    const ex = exercises[i];
+    document.getElementById('exerciseOrder').value = ex.order;
+    document.getElementById('exerciseType').value = ex.type;
+    updateExerciseNames();
+    setTimeout(() => document.getElementById('exerciseName').value = ex.name, 50);
+    document.getElementById('sets').value = ex.sets;
+    document.getElementById('reps').value = ex.reps;
+    document.getElementById('rest').value = ex.rest;
+    editingIndex = i;
     document.getElementById('addBtn').style.display = 'none';
     document.getElementById('updateBtn').style.display = 'block';
 }
@@ -87,36 +116,21 @@ function editExercise(index) {
 function updateExercise() {
     if (editingIndex === -1) return;
 
-    const order = document.getElementById('exerciseOrder').value;
-    const day = document.getElementById('daySelect').value;
+    const order = parseInt(document.getElementById('exerciseOrder').value);
     const type = document.getElementById('exerciseType').value;
     const nameSelect = document.getElementById('exerciseName');
     const name = nameSelect.value;
-    const link = nameSelect.options[nameSelect.selectedIndex].dataset.link;
+    const link = nameSelect.selectedOptions[0].dataset.link;
     const sets = document.getElementById('sets').value;
     const reps = document.getElementById('reps').value;
     const rest = document.getElementById('rest').value;
 
-    // التحقق من عدم تكرار الترتيب (ما عدا التمرين الحالي)
-    const dayExercises = exercises.filter(ex => ex.day === parseInt(day));
-    const existingOrder = dayExercises.find(ex => ex.order === parseInt(order) && ex !== exercises[editingIndex]);
-    
-    if (existingOrder) {
-        alert('هذا الترتيب مستخدم بالفعل في هذا اليوم! الرجاء اختيار ترتيب آخر.');
+    if (exercises.some(e => e.day === currentDay && e.order === order && e !== exercises[editingIndex])) {
+        alert("الترتيب ده مستخدم بالفعل في اليوم ده!");
         return;
     }
 
-    exercises[editingIndex] = {
-        order: parseInt(order),
-        day: parseInt(day),
-        type: type,
-        name: name,
-        link: link,
-        sets: sets,
-        reps: reps,
-        rest: rest
-    };
-
+    exercises[editingIndex] = { order, day: currentDay, type, name, link, sets, reps, rest };
     renderExercises();
     resetForm();
     editingIndex = -1;
@@ -124,48 +138,11 @@ function updateExercise() {
     document.getElementById('updateBtn').style.display = 'none';
 }
 
-function deleteExercise(index) {
-    if (confirm('هل تريد حذف هذا التمرين؟')) {
-        exercises.splice(index, 1);
+function deleteExercise(i) {
+    if (confirm("هل أنت متأكد؟")) {
+        exercises.splice(i, 1);
         renderExercises();
     }
-}
-
-function renderExercises() {
-    const tbody = document.getElementById('exercisesBody');
-    const currentDay = parseInt(document.getElementById('daySelect').value);
-    const dayExercises = exercises
-        .filter(ex => ex.day === currentDay)
-        .sort((a, b) => a.order - b.order);
-
-    tbody.innerHTML = '';
-
-    if (dayExercises.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--accent-color);">لا توجد تمارين مضافة لهذا اليوم</td></tr>`;
-        return;
-    }
-
-    dayExercises.forEach(ex => {
-        const index = exercises.indexOf(ex);
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${ex.order}</td>
-            <td>${ex.type}</td>
-            <td>${ex.name}</td>
-            <td>${ex.sets}</td>
-            <td>${ex.reps}</td>
-            <td>${ex.rest}</td>
-            <td class="action-buttons">
-                <button class="edit-btn" onclick="editExercise(${index})">تعديل</button>
-                <button class="delete-btn" onclick="deleteExercise(${index})">حذف</button>
-                ${ex.link && ex.link.trim() !== '' ? 
-                    `<button class="view-btn" onclick="window.open('${ex.link}', '_blank')">عرض</button>` 
-                    : ''
-                }
-            </td>
-        `;
-        tbody.appendChild(row);
-    });
 }
 
 function resetForm() {
@@ -175,6 +152,9 @@ function resetForm() {
     document.getElementById('sets').value = '3';
     document.getElementById('reps').value = '8-12';
     document.getElementById('rest').value = '1.5-2 min';
+    editingIndex = -1;
+    document.getElementById('addBtn').style.display = 'block';
+    document.getElementById('updateBtn').style.display = 'none';
 }
 
 function applyColors() {
@@ -191,7 +171,7 @@ function applyColors() {
 
 function resetColors() {
     document.getElementById('colorBg').value = '#0a0f25';
-    document.getElementById('colorAccent').value = '#007efc';
+    document.getElementById('colorAccent').value = '#ff6b35';
     document.getElementById('colorText').value = '#ffffff';
     applyColors();
 }
@@ -208,35 +188,27 @@ function loadSavedColors() {
 }
 
 function showPreview() {
-    const currentDay = parseInt(document.getElementById('daySelect').value);
-    const inputBgColor = getComputedStyle(document.documentElement).getPropertyValue('--input-bg-color').trim();
-    const dayExercises = exercises.filter(ex => ex.day === currentDay).sort((a, b) => a.order - b.order);
-
-    if (dayExercises.length === 0) {
+    const dayEx = exercises.filter(e => e.day === currentDay).sort((a, b) => a.order - b.order);
+    if (dayEx.length === 0) {
         alert('لا توجد تمارين للمعاينة!');
         return;
     }
 
-    // عرض نفس محتوى الـ PDF (عناوين إنجليزي، روابط)
-    document.getElementById('previewDayTitle').textContent = 'Day ' + currentDay;
+    document.getElementById('previewDayTitle').textContent = `Day ${currentDay}`;
     const tbody = document.getElementById('previewExercisesBody');
     tbody.innerHTML = '';
-
-    dayExercises.forEach((ex, i) => {
+    dayEx.forEach((ex, i) => {
         const row = document.createElement('tr');
-        row.style.background = i % 2 === 1 ? inputBgColor : '';
+        if (i % 2 === 1) row.style.background = 'var(--input-bg-color)';
         row.innerHTML = `
-            <td class="exercise-number">${ex.order}</td>
-            <td class="exercise-name">
-                ${ex.link ? `<a href="${ex.link}" target="_blank" class="exercise-link">${ex.name}</a>` : ex.name}
-            </td>
+            <td>${ex.order}</td>
+            <td>${ex.link ? `<a href="${ex.link}" target="_blank">${ex.name}</a>` : ex.name}</td>
             <td>${ex.sets}</td>
             <td>${ex.reps}</td>
             <td>${ex.rest}</td>
         `;
         tbody.appendChild(row);
     });
-
     document.getElementById('previewModal').style.display = 'block';
 }
 
@@ -244,19 +216,14 @@ function closePreview() {
     document.getElementById('previewModal').style.display = 'none';
 }
 
-// === دالة تحميل PDF مع نصوص إنجليزية (روابط clickable) ===
-// تحميل PDF لليوم الحالي فقط
 function downloadCurrentDayPDF() {
-    const currentDay = parseInt(document.getElementById('daySelect').value);
     generatePDFForDay(currentDay);
 }
 
-// تحميل PDF لجميع الأيام (ملف واحد أو ملفات منفصلة؟ → ملف واحد متعدد الصفحات)
 function downloadAllDaysPDF() {
     const allDays = [...new Set(exercises.map(ex => ex.day))].sort((a, b) => a - b);
-    
     if (allDays.length === 0) {
-        alert('لا توجد تمارين لتحميل PDF!');
+        alert('لا توجد تمارين!');
         return;
     }
 
@@ -279,31 +246,25 @@ function downloadAllDaysPDF() {
     const bg = hexToRgb(bgColor);
     const inputBg = hexToRgb(inputBgColor);
 
-    allDays.forEach((day, dayIndex) => {
-        if (dayIndex > 0) pdf.addPage();
+    allDays.forEach((day, i) => {
+        if (i > 0) pdf.addPage();
 
-        const dayExercises = exercises
-            .filter(ex => ex.day === day)
-            .sort((a, b) => a.order - b.order);
+        const dayEx = exercises.filter(ex => ex.day === day).sort((a, b) => a.order - b.order);
 
-        // خلفية الصفحة
         pdf.setFillColor(bg.r, bg.g, bg.b);
         pdf.rect(0, 0, 210, 297, 'F');
 
-        // العنوان
         pdf.setTextColor(accent.r, accent.g, accent.b);
         pdf.setFontSize(32);
         pdf.setFont('helvetica', 'bold');
         pdf.text('Workout Program', 105, 35, { align: 'center' });
 
-        // اليوم
         pdf.setFontSize(24);
         pdf.setFillColor(accent.r, accent.g, accent.b);
         pdf.rect(65, 45, 80, 12, 'F');
         pdf.setTextColor(255, 255, 255);
         pdf.text(`Day ${day}`, 105, 53, { align: 'center' });
 
-        // رأس الجدول
         let y = 70;
         pdf.setFillColor(accent.r, accent.g, accent.b);
         pdf.rect(15, y, 180, 12, 'F');
@@ -321,17 +282,14 @@ function downloadAllDaysPDF() {
         pdf.setFont('helvetica', 'normal');
         pdf.setTextColor(text.r, text.g, text.b);
 
-        dayExercises.forEach((ex, i) => {
-            const rowY = y + (i * 12);
-
-            if (i % 2 === 1) {
+        dayEx.forEach((ex, j) => {
+            const rowY = y + (j * 12);
+            if (j % 2 === 1) {
                 pdf.setFillColor(inputBg.r, inputBg.g, inputBg.b);
                 pdf.rect(15, rowY - 8, 180, 11, 'F');
             }
-
             pdf.text(ex.order.toString(), 22, rowY);
-
-            if (ex.link && ex.link.trim() !== '') {
+            if (ex.link) {
                 pdf.textWithLink(ex.name, 40, rowY, { url: ex.link });
                 pdf.setTextColor(accent.r, accent.g, accent.b);
                 pdf.text(ex.name, 40, rowY);
@@ -339,26 +297,22 @@ function downloadAllDaysPDF() {
             } else {
                 pdf.text(ex.name, 40, rowY);
             }
-
             pdf.text(ex.sets, 135, rowY, { align: 'center' });
             pdf.text(ex.reps, 160, rowY, { align: 'center' });
             pdf.text(ex.rest, 185, rowY, { align: 'center' });
         });
     });
 
-    // الفوتر
     pdf.setFontSize(10);
     pdf.setTextColor(180, 180, 180);
     pdf.text('Created by Workout Program Builder Tool', 105, 290, { align: 'center' });
 
-    pdf.save(`Workout_Program_All_Days.pdf`);
+    pdf.save('Workout_Program_All_Days.pdf');
 }
 
-// دالة مساعدة لتوليد PDF ليوم واحد (تُستخدم في الحالتين)
-// دالة مساعدة لتوليد PDF ليوم واحد
 function generatePDFForDay(day) {
-    const dayExercises = exercises.filter(ex => ex.day === day).sort((a, b) => a.order - b.order);
-    if (dayExercises.length === 0) {
+    const dayEx = exercises.filter(ex => ex.day === day).sort((a, b) => a.order - b.order);
+    if (dayEx.length === 0) {
         alert('لا توجد تمارين في هذا اليوم!');
         return;
     }
@@ -382,24 +336,20 @@ function generatePDFForDay(day) {
     const bg = hexToRgb(bgColor);
     const inputBg = hexToRgb(inputBgColor);
 
-    // خلفية الصفحة
     pdf.setFillColor(bg.r, bg.g, bg.b);
     pdf.rect(0, 0, 210, 297, 'F');
 
-    // العنوان
     pdf.setTextColor(accent.r, accent.g, accent.b);
     pdf.setFontSize(32);
     pdf.setFont('helvetica', 'bold');
     pdf.text('Workout Program', 105, 35, { align: 'center' });
 
-    // اليوم
     pdf.setFontSize(24);
     pdf.setFillColor(accent.r, accent.g, accent.b);
     pdf.rect(65, 45, 80, 12, 'F');
     pdf.setTextColor(255, 255, 255);
     pdf.text(`Day ${day}`, 105, 53, { align: 'center' });
 
-    // رأس الجدول
     let y = 70;
     pdf.setFillColor(accent.r, accent.g, accent.b);
     pdf.rect(15, y, 180, 12, 'F');
@@ -417,17 +367,14 @@ function generatePDFForDay(day) {
     pdf.setFont('helvetica', 'normal');
     pdf.setTextColor(text.r, text.g, text.b);
 
-    dayExercises.forEach((ex, i) => {
+    dayEx.forEach((ex, i) => {
         const rowY = y + (i * 12);
-
         if (i % 2 === 1) {
             pdf.setFillColor(inputBg.r, inputBg.g, inputBg.b);
             pdf.rect(15, rowY - 8, 180, 11, 'F');
         }
-
         pdf.text(ex.order.toString(), 22, rowY);
-
-        if (ex.link && ex.link.trim() !== '') {
+        if (ex.link) {
             pdf.textWithLink(ex.name, 40, rowY, { url: ex.link });
             pdf.setTextColor(accent.r, accent.g, accent.b);
             pdf.text(ex.name, 40, rowY);
@@ -435,13 +382,11 @@ function generatePDFForDay(day) {
         } else {
             pdf.text(ex.name, 40, rowY);
         }
-
         pdf.text(ex.sets, 135, rowY, { align: 'center' });
         pdf.text(ex.reps, 160, rowY, { align: 'center' });
         pdf.text(ex.rest, 185, rowY, { align: 'center' });
     });
 
-    // الفوتر
     pdf.setFontSize(10);
     pdf.setTextColor(180, 180, 180);
     pdf.text('Created by Workout Program Builder Tool', 105, 290, { align: 'center' });
@@ -449,36 +394,27 @@ function generatePDFForDay(day) {
     pdf.save(`Workout_Program_Day_${day}.pdf`);
 }
 
-// دالة تحميل الصورة (مع نصوص إنجليزية أيضًا)
 function downloadImage() {
-    const currentDay = parseInt(document.getElementById('daySelect').value);
-    const dayExercises = exercises.filter(ex => ex.day === currentDay).sort((a, b) => a.order - b.order);
-
-    if (dayExercises.length === 0) {
+    const dayEx = exercises.filter(ex => ex.day === currentDay).sort((a, b) => a.order - b.order);
+    if (dayEx.length === 0) {
         alert('لا توجد تمارين لتحميل الصورة!');
         return;
     }
 
     const printPage = document.getElementById('printPage');
-    printPage.innerHTML = createPrintPage(currentDay, dayExercises);
+    printPage.innerHTML = createPrintPage(currentDay, dayEx);
 
-    // أبعاد A4 بالبكسل عند 300 DPI (أفضل جودة للطباعة)
-    const width = 2480;  // 210 مم × 11.8 بكسل/مم تقريبًا
-    const height = 3508; // 297 مم × 11.8 بكسل/مم
-
-    printPage.style.width = width + 'px';
-    printPage.style.height = height + 'px';
-    printPage.style.padding = '80px';
-    printPage.style.boxSizing = 'border-box';
-    printPage.style.background = 'white';
-    printPage.style.fontFamily = "'Cairo', sans-serif";
-    printPage.style.color = '#000';
     printPage.style.display = 'block';
+    printPage.style.width = '2480px';
+    printPage.style.height = '3508px';
+    printPage.style.padding = '80px';
+    printPage.style.background = 'white';
+    printPage.style.color = '#000';
 
     html2canvas(printPage, {
-        scale: 1,                    // مهم: نخليها 1 عشان ما يضربش في الـ width/height
-        width: width,
-        height: height,
+        scale: 1,
+        width: 2480,
+        height: 3508,
         useCORS: true,
         backgroundColor: '#ffffff',
         logging: false
@@ -487,17 +423,11 @@ function downloadImage() {
         link.download = `Workout_Program_Day_${currentDay}_A4.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
-
-        // إرجاع الـ div لحاله الأصلي
         printPage.style.display = 'none';
         printPage.style.width = '';
         printPage.style.height = '';
         printPage.style.padding = '';
         printPage.style.background = '';
-    }).catch(err => {
-        console.error(err);
-        alert('حدث خطأ أثناء إنشاء الصورة!');
-        printPage.style.display = 'none';
     });
 }
 
@@ -537,19 +467,11 @@ function createPrintPage(currentDay, dayExercises) {
     `;
 }
 
-// -------------------- حماية بسيطة --------------------
-document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('keydown', e => {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i'))) {
-        e.preventDefault();
-    }
-});
-
-// -------------------- دمج PDF --------------------
+// دمج PDF
 async function mergePDFs() {
     const mainFile = document.getElementById('mainPDF').files[0];
     const insertFile = document.getElementById('insertPDF').files[0];
-    const pageNum = parseInt(document.getElementById('pageNumber').value) - 1; // 0-based
+    const pageNum = parseInt(document.getElementById('pageNumber').value) - 1;
     const insertMode = document.getElementById('insertMode').value;
     const msg = document.getElementById('msg');
 
@@ -561,13 +483,12 @@ async function mergePDFs() {
     msg.textContent = 'يتم الدمج...';
 
     try {
-        const PDFLib = window.PDFLib; // من المكتبة المضافة
+        const PDFLib = window.PDFLib;
         const mainBytes = await mainFile.arrayBuffer();
         const mainDoc = await PDFLib.PDFDocument.load(mainBytes);
 
         let insertDoc;
         if (insertFile.type.startsWith('image/')) {
-            // تحويل الصورة إلى PDF
             insertDoc = await PDFLib.PDFDocument.create();
             const page = insertDoc.addPage([mainDoc.getPage(0).getWidth(), mainDoc.getPage(0).getHeight()]);
             const imgBytes = await insertFile.arrayBuffer();
@@ -615,16 +536,17 @@ function triggerDownload() {
     document.getElementById('downloadLink').click();
 }
 
-// التهيئة الأولية
-document.addEventListener('DOMContentLoaded', function() {
+// حماية بسيطة
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i'))) {
+        e.preventDefault();
+    }
+});
+
+// تهيئة أولية
+document.addEventListener('DOMContentLoaded', () => {
     updateExerciseNames();
     renderExercises();
     loadSavedColors();
 });
-
-window.onclick = function(event) {
-    const modal = document.getElementById('previewModal');
-    if (event.target == modal) {
-        closePreview();
-    }
-};

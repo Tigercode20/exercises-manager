@@ -8,41 +8,25 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🏋️ بناء برنامج التمرين</h1>
-        </div>
+        <div class="header"><h1>بناء برنامج التمرين</h1></div>
 
-        
-        <!-- Day Selection -->
-        <div class="day-title" id="dayTitle">Day 1</div>
+        <section class="days-section">
+            <div class="days-row" id="daysRow"></div>
+        </section>
 
-        <!-- Exercise Form -->
+        <div class="day-title" id="currentDayLabel">Day 1</div>
+
         <div class="exercise-form">
             <div class="form-row">
                 <div class="form-group">
-                    <label>اليوم</label>
-                    <select id="daySelect">
-                        <option value="1">Day 1</option>
-                        <option value="2">Day 2</option>
-                        <option value="3">Day 3</option>
-                        <option value="4">Day 4</option>
-                        <option value="5">Day 5</option>
-                    </select>
-                </div>
-                <div class="form-group">
                     <label>ترتيب التمرين</label>
                     <select id="exerciseOrder">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                        <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                        <option value="7">7</option><option value="8">8</option><option value="9">9</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label>نوع التمرين</label>
                     <select id="exerciseType">
@@ -65,35 +49,29 @@
 
                 <div class="form-group-large">
                     <label>اسم التمرين</label>
-                    <select id="exerciseName">
-                        <!-- سيتم تعبئته ديناميكياً -->
-                    </select>
+                    <select id="exerciseName"></select>
                 </div>
 
                 <div class="form-group">
-                    <label>المجموعات (Sets)</label>
+                    <label>المجموعات</label>
                     <select id="sets">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
+                        <option value="1">1</option><option value="2">2</option><option value="3" selected>3</option>
+                        <option value="4">4</option><option value="5">5</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>التكرارات (Reps)</label>
+                    <label>التكرارات</label>
                     <select id="reps">
-                        <option value="8-12">8-12</option>
-                        <option value="10-12">10-12</option>
-                        <option value="12-15">12-15</option>
+                        <option value="8-12" selected>8-12</option>
+                        <option value="10-12">10-12</option><option value="12-15">12-15</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>الراحة (Rest)</label>
+                    <label>الراحة</label>
                     <select id="rest">
-                        <option value="1.5-2 min">1.5-2 min</option>
+                        <option value="1.5-2 min" selected>1.5-2 min</option>
                         <option value="2-3 min">2-3 min</option>
                     </select>
                 </div>
@@ -105,7 +83,6 @@
             </div>
         </div>
 
-        <!-- Exercises Table -->
         <table class="exercise-table" id="exercisesTable">
             <thead>
                 <tr>
@@ -118,120 +95,83 @@
                     <th>الإجراءات</th>
                 </tr>
             </thead>
-            <tbody id="exercisesBody">
-                <!-- سيتم إضافة التمارين هنا -->
-            </tbody>
+            <tbody id="exercisesBody"></tbody>
         </table>
 
-                    <!-- Download Section -->
-            <div class="download-section">
-                <button class="preview-btn" onclick="showPreview()">معاينة البرنامج</button>
-                <button class="download-btn" onclick="downloadImage()">تحميل صورة</button>
-                <button class="pdf-btn" onclick="downloadCurrentDayPDF()">تحميل PDF (اليوم الحالي)</button>
-                <button class="pdf-all-btn" onclick="downloadAllDaysPDF()">تحميل جميع الأيام PDF</button>
+        <div class="download-section">
+            <button class="preview-btn" onclick="showPreview()">معاينة</button>
+            <button class="download-btn" onclick="downloadImage()">تحميل صورة</button>
+            <button class="pdf-btn" onclick="downloadCurrentDayPDF()">PDF (اليوم)</button>
+            <button class="pdf-all-btn" onclick="downloadAllDaysPDF()">PDF (كل الأيام)</button>
+        </div>
+
+        <section class="bottom-tools">
+            <div class="tool-card">
+                <h2>تخصيص الألوان</h2>
+                <div class="color-picker">
+                    <div class="color-group">
+                        <label>الخلفية:</label>
+                        <input type="color" id="colorBg" value="#0a0f25">
+                    </div>
+                    <div class="color-group">
+                        <label>التمييز:</label>
+                        <input type="color" id="colorAccent" value="#ff6b35">
+                    </div>
+                    <div class="color-group">
+                        <label>النص:</label>
+                        <input type="color" id="colorText" value="#ffffff">
+                    </div>
+                    <div class="color-group">
+                        <button onclick="applyColors()">تطبيق</button>
+                        <button onclick="resetColors()" class="secondary-btn">إعادة تعيين</button>
+                    </div>
+                </div>
             </div>
 
-        <!-- Color Picker Section -->
-        <section class="color-section">
-            <h2>🎨 تخصيص الألوان</h2>
-            <div class="color-picker">
-                <div class="color-group">
-                    <label>لون الخلفية:</label>
-                    <input type="color" id="colorBg" value="#0a0f25">
-                </div>
-                <div class="color-group">
-                    <label>لون التمييز:</label>
-                    <input type="color" id="colorAccent" value="#ff6b35">
-                </div>
-                <div class="color-group">
-                    <label>لون النص:</label>
-                    <input type="color" id="colorText" value="#ffffff">
-                </div>
-                <div class="color-group">
-                    <button onclick="applyColors()">تطبيق الألوان</button>
-                    <button onclick="resetColors()" class="secondary-btn">إعادة تعيين</button>
-                </div>
-            </div>
-            
-                        <!-- Merge PDF Section -->
-            <section class="merge-section">
-                <h2>📂 دمج الملفات</h2>
+            <div class="tool-card">
+                <h2>دمج PDF</h2>
                 <div class="merge-form">
-                    <div class="form-group">
-                        <label>الملف الرئيسي (PDF):</label>
-                        <input type="file" id="mainPDF" accept=".pdf">
-                    </div>
-                    <div class="form-group">
-                        <label>الملف المراد إدراجه (PDF أو صورة):</label>
-                        <input type="file" id="insertPDF" accept=".pdf,image/*">
-                    </div>
-                    <div class="form-group">
-                        <label>رقم الصفحة :</label>
-                        <input type="number" id="pageNumber" min="1" value="1">
-                    </div>
-                    <div class="form-group">
-                        <label>الوضع:</label>
-                        <select id="insertMode">
-                            <option value="after">إدراج بعد الصفحة</option>
-                            <option value="replace">استبدال الصفحة</option>
-                        </select>
-                    </div>
-                    <button onclick="mergePDFs()">دمج الآن</button>
+                    <input type="file" id="mainPDF" accept=".pdf"><br><br>
+                    <input type="file" id="insertPDF" accept=".pdf,image/*"><br><br>
+                    <input type="number" id="pageNumber" min="1" value="1"><br><br>
+                    <select id="insertMode">
+                        <option value="after">بعد الصفحة</option>
+                        <option value="replace">استبدال</option>
+                    </select><br><br>
+                    <button onclick="mergePDFs()">دمج</button>
                 </div>
                 <p id="msg"></p>
                 <a id="downloadLink" style="display:none;"></a>
-                <button id="downloadBtn" onclick="triggerDownload()" style="display:none;">تحميل الملف المدمج</button>
-            </section>
-            
+                <button id="downloadBtn" onclick="triggerDownload()" style="display:none;">تحميل المدمج</button>
+            </div>
         </section>
-
     </div>
 
-    <!-- Preview Modal -->
     <div class="modal" id="previewModal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>معاينة برنامج التمرين</h2>
-                <span class="close" onclick="closePreview()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="page" id="previewPage">
-                    <div class="page-header">
-                        <h1 class="page-title">برنامج التمرين</h1>
-                        <div class="page-day" id="previewDayTitle">Day 1</div>
-                    </div>
-                    
-                    <table class="print-table">
-                        <thead>
-                            <tr>
-                                <th width="10%">#</th>
-                                <th width="50%">اسم التمرين</th>
-                                <th width="15%">المجموعات</th>
-                                <th width="15%">التكرارات</th>
-                                <th width="10%">الراحة</th>
-                            </tr>
-                        </thead>
-                        <tbody id="previewExercisesBody">
-                            <!-- سيتم تعبئته ديناميكياً -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="secondary-btn" onclick="closePreview()">رجوع للتعديل</button>
-                <button class="primary-btn" onclick="confirmDownload()">موافق والتحميل</button>
-            </div>
+            <span class="close" onclick="closePreview()">×</span>
+            <h2>معاينة اليوم: <span id="previewDayTitle"></span></h2>
+            <table class="print-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>التمرين</th>
+                        <th>مج</th>
+                        <th>تك</th>
+                        <th>راحة</th>
+                    </tr>
+                </thead>
+                <tbody id="previewExercisesBody"></tbody>
+            </table>
         </div>
     </div>
 
-<!-- Print Page (Hidden) -->
-<!-- Print Page (Hidden) -->
-<div id="printPage" style="display: none;"></div>
+    <div id="printPage" style="display:none;"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="exercises-data.js"></script>
-<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-<script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="exercises-data.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
